@@ -18,6 +18,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -54,9 +56,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Location mLastLocation;
     private AddressResultReceiver mResultReceiver;
 
+    private ViewPager mViewPager;
+    private Adapter mAdapter;
+
     private double latitude;
     private double longitude;
     private Current mCurrent;
+
+    private Button testButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +79,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         mResultReceiver = new AddressResultReceiver(new Handler());
+
+        testButton = (Button) findViewById(R.id.testButton);
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startIntentService();
+                getForecast(latitude, longitude);
+                mAdapter.updateCurrent(mCurrent);
+            }
+        });
 
     }
 
@@ -116,7 +133,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    updateUI();
+                                    //Create ViewPager, add fragments
+                                    mViewPager = (ViewPager) findViewById(R.id.viewpager);
+                                    mAdapter = new Adapter(getSupportFragmentManager());
+                                    mAdapter.addFragment(CurrentFragment.newInstance(mCurrent));
+                                    mAdapter.addFragment(CurrentFragment.newInstance(mCurrent));
+                                    mAdapter.addFragment(CurrentFragment.newInstance(mCurrent));
+                                    mViewPager.setAdapter(mAdapter);
                                 }
                             });
                         } else {
@@ -140,12 +163,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    private void updateUI() {
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(CurrentFragment.newInstance(mCurrent));
-        viewPager.setAdapter(adapter);
-    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -230,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return mCurrent;
     }
 
-
     protected void startIntentService() {
         Intent intent = new Intent(this, FetchAddressIntentService.class);
         intent.putExtra(Constants.RECEIVER, mResultReceiver);
@@ -276,6 +292,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     //Fragment ViewPager Adapter inner class
     static class Adapter extends FragmentPagerAdapter {
+        private Current mCurrent;
+
         private final List<Fragment> mFragmentList = new ArrayList<>();
 
         public Adapter(FragmentManager fm) {
@@ -294,6 +312,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         @Override
         public int getCount() {
             return mFragmentList.size();
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            if (object instanceof UpdateableFragment) {
+                if (object instanceof CurrentFragment) {
+                    ((UpdateableFragment) object).update(mCurrent);
+                }
+            }
+            return super.getItemPosition(object);
+        }
+
+        public void updateCurrent(Current current){
+            mCurrent = current;
+            notifyDataSetChanged();
         }
     }
 

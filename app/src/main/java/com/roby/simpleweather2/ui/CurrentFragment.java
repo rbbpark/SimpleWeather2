@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Roby on 1/5/2016.
  */
-public class CurrentFragment extends Fragment {
+public class CurrentFragment extends Fragment implements UpdateableFragment {
 
     private Current mCurrent;
 
@@ -47,15 +47,18 @@ public class CurrentFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_current_frag, container, false);
         ButterKnife.bind(this, view);
+       update(mCurrent);
+        return view;
+    }
 
+    @Override
+    public void update(Object object) {
+        mCurrent = (Current) object;
         mTimeView.setText(mCurrent.getFormattedTime());
         mTempView.setText(mCurrent.getTemperature() + "");
         mHumidityView.setText(mCurrent.getHumidity() + "");
         mPrecipView.setText(mCurrent.getPrecipChance() + "");
         mSummaryView.setText(mCurrent.getSummary());
         mTimezoneView.setText(mCurrent.getTimezone());
-
-        return view;
     }
-
 }
