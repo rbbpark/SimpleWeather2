@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Simple Weather 2</string>
+    <string name="network_unavail_message">Network unavailable</string>
+</resources>
