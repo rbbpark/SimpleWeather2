@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                     mAdapter = new Adapter(getSupportFragmentManager());
                                     mAdapter.addFragment(CurrentFragment.newInstance(mCurrent));
                                     mAdapter.addFragment(DayFragment.newInstance(mForecast.getDailyForecast()));
+                                    mAdapter.addFragment(HourFragment.newInstance(mForecast.getHourlyForecast()));
                                     mViewPager.setAdapter(mAdapter);
                                 }
                             });
