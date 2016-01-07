@@ -59,12 +59,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private ViewPager mViewPager;
     private Adapter mAdapter;
 
-    private double latitude;
-    private double longitude;
-    private Current mCurrent;
-
-    private Button testButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,19 +71,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .addApi(LocationServices.API)
                     .build();
         }
-
         mResultReceiver = new AddressResultReceiver(new Handler());
-
-        testButton = (Button) findViewById(R.id.testButton);
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startIntentService();
-                getForecast(latitude, longitude);
-                mAdapter.updateCurrent(mCurrent);
-            }
-        });
-
     }
 
     @Override
@@ -128,15 +110,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         Log.v(TAG, jsonData);
                         if (response.isSuccessful()) {
                             mForecast = parseForecastDetails(jsonData);
-                            mCurrent = mForecast.getCurrent();
-
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     //Create ViewPager, add fragments
                                     mViewPager = (ViewPager) findViewById(R.id.viewpager);
                                     mAdapter = new Adapter(getSupportFragmentManager());
-                                    mAdapter.addFragment(CurrentFragment.newInstance(mCurrent));
+                                    mAdapter.addFragment(CurrentFragment.newInstance(mForecast.getCurrent()));
                                     mAdapter.addFragment(DayFragment.newInstance(mForecast.getDailyForecast()));
                                     mAdapter.addFragment(HourFragment.newInstance(mForecast.getHourlyForecast()));
                                     mViewPager.setAdapter(mAdapter);
@@ -232,18 +212,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         JSONObject currently = forecast.getJSONObject("currently");
 
-        mCurrent = new Current();
-        mCurrent.setHumidity(currently.getDouble("humidity"));
-        mCurrent.setPrecipChance(currently.getDouble("precipProbability"));
-        mCurrent.setIcon(currently.getString("icon"));
-        mCurrent.setSummary(currently.getString("summary"));
-        mCurrent.setTemperature(currently.getDouble("temperature"));
-        mCurrent.setTime(currently.getLong("time"));
-        mCurrent.setTimezone(timezone);
+        Current current = new Current();
+        current.setHumidity(currently.getDouble("humidity"));
+        current.setPrecipChance(currently.getDouble("precipProbability"));
+        current.setIcon(currently.getString("icon"));
+        current.setSummary(currently.getString("summary"));
+        current.setTemperature(currently.getDouble("temperature"));
+        current.setTime(currently.getLong("time"));
+        current.setTimezone(timezone);
 
-        Log.d(TAG, mCurrent.getFormattedTime());
+        Log.d(TAG, current.getFormattedTime());
 
-        return mCurrent;
+        return current;
     }
 
     protected void startIntentService() {
@@ -264,11 +244,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         if (mLastLocation != null) {
-            latitude = mLastLocation.getLatitude();
-            longitude = mLastLocation.getLongitude();
             //When it connects, update weather information
             //this runs when the app starts and GoogleApi builds/connects
-            getForecast(latitude, longitude);
+            getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
             if (!Geocoder.isPresent()) {
                 Toast.makeText(this, "No GeoCoder available",
@@ -291,7 +269,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     //Fragment ViewPager Adapter inner class
     static class Adapter extends FragmentPagerAdapter {
-        private Current mCurrent;
 
         private final List<Fragment> mFragmentList = new ArrayList<>();
 
@@ -313,20 +290,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return mFragmentList.size();
         }
 
-        @Override
-        public int getItemPosition(Object object) {
-            if (object instanceof UpdateableFragment) {
-                if (object instanceof CurrentFragment) {
-                    ((UpdateableFragment) object).update(mCurrent);
-                }
-            }
-            return super.getItemPosition(object);
-        }
-
-        public void updateCurrent(Current current) {
-            mCurrent = current;
-            notifyDataSetChanged();
-        }
     }
 
     //ResultReceiver inner class
