@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.roby.simpleweather2.R;
 import com.roby.simpleweather2.model.Current;
+import com.roby.simpleweather2.model.Forecast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -16,7 +17,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Roby on 1/5/2016.
  */
-public class CurrentFragment extends Fragment {
+public class CurrentFragment extends Fragment implements UpdateableFragment {
 
     private Current mCurrent;
 
@@ -47,13 +48,22 @@ public class CurrentFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_current_frag, container, false);
         ButterKnife.bind(this, view);
+        updateUI();
+        return view;
+    }
+
+    private void updateUI(){
         mTimeView.setText(mCurrent.getFormattedTime());
         mTempView.setText(mCurrent.getTemperature() + "");
         mHumidityView.setText(mCurrent.getHumidity() + "");
         mPrecipView.setText(mCurrent.getPrecipChance() + "");
         mSummaryView.setText(mCurrent.getSummary());
         mTimezoneView.setText(mCurrent.getTimezone());
-        return view;
     }
 
+    @Override
+    public void update(Forecast forecast) {
+        mCurrent = forecast.getCurrent();
+        updateUI();
+    }
 }

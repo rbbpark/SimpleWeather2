@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private ViewPager mViewPager;
     private Adapter mAdapter;
 
+    private Button mButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +74,37 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .build();
         }
         mResultReceiver = new AddressResultReceiver(new Handler());
+
+        mButton = (Button) findViewById(R.id.refreshButton);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getData();
+                mAdapter.update(mForecast);
+            }
+        });
+    }
+
+    public void getData(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED) {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }
+
+        if (mLastLocation != null) {
+            //When it connects, update weather information
+            //this runs when the app starts and GoogleApi builds/connects
+            getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+            if (!Geocoder.isPresent()) {
+                Toast.makeText(this, "No GeoCoder available",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            startIntentService();
+        }
     }
 
     @Override
@@ -236,25 +269,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     //Implemented methods
     @Override
     public void onConnected(Bundle bundle) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                        PackageManager.PERMISSION_GRANTED) {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        }
-
-        if (mLastLocation != null) {
-            //When it connects, update weather information
-            //this runs when the app starts and GoogleApi builds/connects
-            getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-
-            if (!Geocoder.isPresent()) {
-                Toast.makeText(this, "No GeoCoder available",
-                        Toast.LENGTH_LONG).show();
-                return;
-            }
-            startIntentService();
-        }
+        getData();
     }
 
     @Override
@@ -269,6 +284,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     //Fragment ViewPager Adapter inner class
     static class Adapter extends FragmentPagerAdapter {
+
+        Forecast mForecast;
 
         private final List<Fragment> mFragmentList = new ArrayList<>();
 
@@ -288,6 +305,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         @Override
         public int getCount() {
             return mFragmentList.size();
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            if (object instanceof UpdateableFragment) {
+                ((UpdateableFragment) object).update(mForecast);
+            }
+            return super.getItemPosition(object);
+        }
+
+        public void update(Forecast forecast){
+            mForecast = forecast;
+            notifyDataSetChanged();
         }
 
     }

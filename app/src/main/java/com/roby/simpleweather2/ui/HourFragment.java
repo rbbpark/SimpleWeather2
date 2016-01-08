@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.roby.simpleweather2.R;
 import com.roby.simpleweather2.model.Day;
+import com.roby.simpleweather2.model.Forecast;
 import com.roby.simpleweather2.model.Hour;
 
 import java.util.Arrays;
@@ -19,8 +20,9 @@ import java.util.Arrays;
 /**
  * Created by Roby on 1/6/2016.
  */
-public class HourFragment extends Fragment{
+public class HourFragment extends Fragment implements UpdateableFragment{
     private Hour[] mHours;
+    private RecyclerView mRecyclerView;
 
     public static HourFragment newInstance(Hour[] hours){
         HourFragment hourFragment = new HourFragment();
@@ -40,10 +42,16 @@ public class HourFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        RecyclerView rv = (RecyclerView) inflater.inflate(R.layout.activity_day_frag, container, false);
-        rv.setLayoutManager(new LinearLayoutManager(rv.getContext()));
-        rv.setAdapter(new HourAdapter(mHours));
-        return rv;
+        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.activity_day_frag, container, false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
+        mRecyclerView.setAdapter(new HourAdapter(mHours));
+        return mRecyclerView;
+    }
+
+    @Override
+    public void update(Forecast forecast) {
+        mHours = forecast.getHourlyForecast();
+        mRecyclerView.setAdapter(new HourAdapter(mHours));
     }
 
     //HourAdapter inner class

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.roby.simpleweather2.R;
 import com.roby.simpleweather2.model.Current;
 import com.roby.simpleweather2.model.Day;
+import com.roby.simpleweather2.model.Forecast;
 
 import java.util.Arrays;
 
@@ -22,9 +23,10 @@ import butterknife.ButterKnife;
 /**
  * Created by Roby on 1/6/2016.
  */
-public class DayFragment extends Fragment {
+public class DayFragment extends Fragment implements UpdateableFragment {
 
     private Day[] mDays;
+    private RecyclerView mRecyclerView;
 
     public static DayFragment newInstance(Day[] days) {
         DayFragment dayFragment = new DayFragment();
@@ -44,10 +46,15 @@ public class DayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        RecyclerView rv = (RecyclerView) inflater.inflate(R.layout.activity_day_frag, container, false);
-        rv.setLayoutManager(new LinearLayoutManager(rv.getContext()));
-        rv.setAdapter(new DayAdapter(mDays));
-        return rv;
+        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.activity_day_frag, container, false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
+        mRecyclerView.setAdapter(new DayAdapter(mDays));
+        return mRecyclerView;
+    }
+
+    public void update(Forecast forecast){
+        mDays = forecast.getDailyForecast();
+        mRecyclerView.setAdapter(new DayAdapter(mDays));
     }
 
     //DayAdapter inner class
