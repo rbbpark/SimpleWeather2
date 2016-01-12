@@ -22,6 +22,7 @@ import java.util.Arrays;
  */
 public class HourFragment extends Fragment implements UpdateableFragment{
     private Hour[] mHours;
+
     private RecyclerView mRecyclerView;
 
     public static HourFragment newInstance(Hour[] hours){
@@ -44,14 +45,15 @@ public class HourFragment extends Fragment implements UpdateableFragment{
                              Bundle savedInstanceState) {
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.activity_day_frag, container, false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
-        mRecyclerView.setAdapter(new HourAdapter(mHours));
+        HourAdapter adapter = new HourAdapter(mHours);
+        mRecyclerView.setAdapter(adapter);
         return mRecyclerView;
     }
 
     @Override
     public void update(Forecast forecast) {
-        mHours = forecast.getHourlyForecast();
-        mRecyclerView.setAdapter(new HourAdapter(mHours));
+        mHours = Arrays.copyOf(forecast.getHourlyForecast(), forecast.getHourlyForecast().length, Hour[].class);
+        mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     //HourAdapter inner class

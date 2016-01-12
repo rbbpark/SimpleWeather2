@@ -48,13 +48,14 @@ public class DayFragment extends Fragment implements UpdateableFragment {
                              Bundle savedInstanceState) {
         mRecyclerView = (RecyclerView) inflater.inflate(R.layout.activity_day_frag, container, false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
-        mRecyclerView.setAdapter(new DayAdapter(mDays));
+        DayAdapter adapter = new DayAdapter(mDays);
+        mRecyclerView.setAdapter(adapter);
         return mRecyclerView;
     }
 
     public void update(Forecast forecast){
-        mDays = forecast.getDailyForecast();
-        mRecyclerView.setAdapter(new DayAdapter(mDays));
+        mDays = Arrays.copyOf(forecast.getDailyForecast(), forecast.getDailyForecast().length, Day[].class);
+        mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     //DayAdapter inner class

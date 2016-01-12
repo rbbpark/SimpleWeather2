@@ -18,6 +18,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -73,39 +76,45 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .addApi(LocationServices.API)
                     .build();
         }
+
         mResultReceiver = new AddressResultReceiver(new Handler());
 
         mButton = (Button) findViewById(R.id.refreshButton);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getData();
-                mAdapter.update(mForecast);
+                getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             }
         });
     }
 
-    public void getData(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                        PackageManager.PERMISSION_GRANTED) {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        }
-
-        if (mLastLocation != null) {
-            //When it connects, update weather information
-            //this runs when the app starts and GoogleApi builds/connects
-            getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-
-            if (!Geocoder.isPresent()) {
-                Toast.makeText(this, "No GeoCoder available",
-                        Toast.LENGTH_LONG).show();
-                return;
-            }
-            startIntentService();
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.action_refresh:
+                Toast.makeText(this, "Refresh selected", Toast.LENGTH_SHORT)
+                        .show();
+                break;
+            // action with ID action_settings was selected
+            case R.id.action_settings:
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT)
+                        .show();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
 
     @Override
     protected void onStart() {
@@ -147,12 +156,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                 @Override
                                 public void run() {
                                     //Create ViewPager, add fragments
-                                    mViewPager = (ViewPager) findViewById(R.id.viewpager);
-                                    mAdapter = new Adapter(getSupportFragmentManager());
-                                    mAdapter.addFragment(CurrentFragment.newInstance(mForecast.getCurrent()));
-                                    mAdapter.addFragment(DayFragment.newInstance(mForecast.getDailyForecast()));
-                                    mAdapter.addFragment(HourFragment.newInstance(mForecast.getHourlyForecast()));
-                                    mViewPager.setAdapter(mAdapter);
+                                    if (mViewPager == null) {
+                                        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+                                        mAdapter = new Adapter(getSupportFragmentManager());
+                                        mAdapter.addFragment(CurrentFragment.newInstance(mForecast.getCurrent()));
+                                        mAdapter.addFragment(DayFragment.newInstance(mForecast.getDailyForecast()));
+                                        mAdapter.addFragment(HourFragment.newInstance(mForecast.getHourlyForecast()));
+                                        mViewPager.setAdapter(mAdapter);
+                                    } else {
+                                        mAdapter.update(mForecast);
+                                    }
                                 }
                             });
                         } else {
@@ -166,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
             });
             if (mGoogleApiClient.isConnected() && mLastLocation != null) {
-                //startIntentService();
+                startIntentService();
                 Log.e(TAG, "Started intent service");
             }
             Log.d(TAG, "Main UI code running here");
@@ -195,8 +208,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         return forecast;
     }
-
-    //how does this work?? idk
 
     private Day[] getDailyForecast(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
@@ -269,7 +280,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     //Implemented methods
     @Override
     public void onConnected(Bundle bundle) {
-        getData();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED) {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }
+
+        if (mLastLocation != null) {
+            //When it connects, update weather information
+            //this runs when the app starts and GoogleApi builds/connects
+            getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+            if (!Geocoder.isPresent()) {
+                Toast.makeText(this, "No GeoCoder available",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            //startIntentService();
+        }
     }
 
     @Override
@@ -284,8 +313,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     //Fragment ViewPager Adapter inner class
     static class Adapter extends FragmentPagerAdapter {
-
-        Forecast mForecast;
 
         private final List<Fragment> mFragmentList = new ArrayList<>();
 
@@ -307,17 +334,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return mFragmentList.size();
         }
 
-        @Override
-        public int getItemPosition(Object object) {
-            if (object instanceof UpdateableFragment) {
-                ((UpdateableFragment) object).update(mForecast);
+        public void update(Forecast forecast) {
+            for (Fragment fragment : mFragmentList) {
+                    ((UpdateableFragment) fragment).update(forecast);
             }
-            return super.getItemPosition(object);
-        }
-
-        public void update(Forecast forecast){
-            mForecast = forecast;
-            notifyDataSetChanged();
         }
 
     }
