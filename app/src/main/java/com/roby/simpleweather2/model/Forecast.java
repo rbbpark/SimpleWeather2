@@ -44,27 +44,27 @@ public class Forecast {
     }
 
     public static int getIconId(String iconString) {
-        int iconId = R.drawable.clear_day;
+        int iconId = R.drawable.ic_weather_sunny_white_48dp;
         if (iconString.equals("clear-day")) {
-            iconId = R.drawable.clear_day;
+            iconId = R.drawable.ic_weather_sunny_white_48dp;
         } else if (iconString.equals("clear-night")) {
-            iconId = R.drawable.clear_night;
+            iconId = R.drawable.ic_weather_night_white_48dp;
         } else if (iconString.equals("rain")) {
-            iconId = R.drawable.rain;
+            iconId = R.drawable.ic_weather_rainy_white_48dp;
         } else if (iconString.equals("snow")) {
-            iconId = R.drawable.snow;
+            iconId = R.drawable.ic_weather_snowy_white_48dp;
         } else if (iconString.equals("sleet")) {
-            iconId = R.drawable.sleet;
+            iconId = R.drawable.ic_weather_hail_white_48dp;
         } else if (iconString.equals("wind")) {
-            iconId = R.drawable.wind;
+            iconId = R.drawable.ic_weather_windy_white_48dp;
         } else if (iconString.equals("fog")) {
-            iconId = R.drawable.fog;
+            iconId = R.drawable.ic_weather_fog_white_48dp;
         } else if (iconString.equals("cloudy")) {
-            iconId = R.drawable.cloudy;
+            iconId = R.drawable.ic_weather_cloudy_white_48dp;
         } else if (iconString.equals("partly-cloudy-day")) {
-            iconId = R.drawable.partly_cloudy;
+            iconId = R.drawable.ic_weather_partlycloudy_white_48dp;
         } else if (iconString.equals("partly-cloudy-night")) {
-            iconId = R.drawable.cloudy_night;
+            iconId = R.drawable.ic_weather_cloudy_white_48dp;
         }
         return iconId;
     }

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.roby.simpleweather2.R;
@@ -27,6 +28,7 @@ public class CurrentFragment extends Fragment implements UpdateableFragment {
     @Bind(R.id.currentPrecipChance) TextView mPrecipView;
     @Bind(R.id.currentSummary) TextView mSummaryView;
     @Bind(R.id.currentTimezone) TextView mTimezoneView;
+    @Bind(R.id.currentIcon) ImageView mImageView;
 
 
     public static CurrentFragment newInstance(Current current) {
@@ -59,6 +61,7 @@ public class CurrentFragment extends Fragment implements UpdateableFragment {
         mPrecipView.setText(mCurrent.getPrecipChance() + "");
         mSummaryView.setText(mCurrent.getSummary());
         mTimezoneView.setText(mCurrent.getTimezone());
+        mImageView.setImageResource(mCurrent.getIconId());
     }
 
     @Override

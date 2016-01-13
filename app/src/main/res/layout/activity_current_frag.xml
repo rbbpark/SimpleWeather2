@@ -39,4 +39,10 @@
         android:layout_height="wrap_content"
         android:text="loading..."
         android:id="@+id/currentTimezone"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/currentIcon"
+        android:src="@drawable/ic_weather_sunny_white_48dp"/>
 </LinearLayout>

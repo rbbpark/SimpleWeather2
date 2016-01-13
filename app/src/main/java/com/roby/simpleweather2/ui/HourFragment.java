@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.roby.simpleweather2.R;
@@ -87,18 +88,21 @@ public class HourFragment extends Fragment implements UpdateableFragment{
             private TextView mTemperatureLabel;
             private TextView mTimeLabel;
             private TextView mSummaryLabel;
+            private ImageView mImageView;
 
             public HourViewHolder(View itemView) {
                 super(itemView);
                 mTimeLabel = (TextView) itemView.findViewById(R.id.timeLabel);
                 mSummaryLabel = (TextView) itemView.findViewById(R.id.summaryLabel);
                 mTemperatureLabel = (TextView) itemView.findViewById(R.id.temperatureLabel);
+                mImageView = (ImageView) itemView.findViewById(R.id.hourIcon);
             }
 
             public void bindHour(Hour hour) {
                 mTimeLabel.setText(hour.getHourText());
                 mSummaryLabel.setText(hour.getSummary());
                 mTemperatureLabel.setText(hour.getTemperature() + "");
+                mImageView.setImageResource(hour.getIconId());
             }
         }
     }
