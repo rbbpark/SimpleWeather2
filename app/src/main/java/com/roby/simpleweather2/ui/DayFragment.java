@@ -90,20 +90,17 @@ public class DayFragment extends Fragment implements UpdateableFragment {
 
             private TextView mTemperatureLabel;
             private TextView mTimeLabel;
-            private TextView mSummaryLabel;
             private ImageView mImageView;
 
             public DayViewHolder(View itemView) {
                 super(itemView);
                 mTimeLabel = (TextView) itemView.findViewById(R.id.timeLabel);
-                mSummaryLabel = (TextView) itemView.findViewById(R.id.summaryLabel);
                 mTemperatureLabel = (TextView) itemView.findViewById(R.id.temperatureLabel);
                 mImageView = (ImageView) itemView.findViewById(R.id.dayIcon);
             }
 
             public void bindDay(Day day) {
                 mTimeLabel.setText(day.getDayOfWeek());
-                mSummaryLabel.setText(day.getSummary());
                 mTemperatureLabel.setText(day.getTemperatureMax() + "");
                 mImageView.setImageResource(day.getIconId());
             }

@@ -1,48 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+    tools:background="#3F51B5">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/currentTime"
-        android:text="00:00 AM"/>
+        android:text="00:00 AM"
+        android:layout_above="@+id/currentTemp"
+        android:layout_centerHorizontal="true"
+        android:textColor="#80ffffff"
+        android:paddingBottom="24dp"
+        android:textSize="20sp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/currentTemp"
-        android:text="000"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0.00"
-        android:id="@+id/currentHumidity"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0.00"
-        android:id="@+id/currentPrecipChance"/>
+        android:layout_centerInParent="true"
+        android:text="000"
+        android:textSize="150sp"
+        android:textColor="#ffffff"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="loading..."
-        android:id="@+id/currentSummary"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="loading..."
-        android:id="@+id/currentTimezone"/>
+        android:id="@+id/currentSummary"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        android:paddingBottom="16dp"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/currentIcon"
-        android:src="@drawable/ic_weather_sunny_white_48dp"/>
-</LinearLayout>
+        android:src="@drawable/ic_weather_sunny_white_48dp"
+        android:layout_above="@+id/currentLocationText"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="12dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/currentLocationText"
+        android:layout_above="@+id/currentTemp"
+        android:layout_centerHorizontal="true"
+        tools:text="Santa Cruz, California"
+        android:textSize="24sp"
+        android:textColor="#ffffff"
+        android:paddingBottom="60dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/currentTemp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/linearLayout">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Humidity"
+                android:id="@+id/humidityLabel"
+                android:textColor="#80ffffff"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:id="@+id/currentHumidity"
+                android:textColor="#ffffff"
+                android:textSize="24sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RAIN/SNOW?"
+                android:id="@+id/precipLabel"
+                android:textColor="#80ffffff"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:id="@+id/currentPrecipChance"
+                android:textSize="24sp"
+                android:textColor="#ffffff"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

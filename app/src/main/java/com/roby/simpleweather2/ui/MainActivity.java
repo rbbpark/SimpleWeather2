@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private ViewPager mViewPager;
     private Adapter mAdapter;
+    private String locationString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
         Forecast forecast = new Forecast();
-
         forecast.setCurrent(getCurrentDetails(jsonData));
         forecast.setHourlyForecast(getHourlyForecast(jsonData));
         forecast.setDailyForecast(getDailyForecast(jsonData));
@@ -251,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         current.setTemperature(currently.getDouble("temperature"));
         current.setTime(currently.getLong("time"));
         current.setTimezone(timezone);
+        current.setLocationString(locationString);
 
         Log.d(TAG, current.getFormattedTime());
 
@@ -340,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         protected void onReceiveResult(int resultCode, Bundle resultData) {
             // Display the address string
             // or an error message sent from the intent service.
-            //mForecast.setLocation(resultData.getString(Constants.RESULT_DATA_KEY));
+            locationString = resultData.getString(Constants.RESULT_DATA_KEY);
         }
     }
 }

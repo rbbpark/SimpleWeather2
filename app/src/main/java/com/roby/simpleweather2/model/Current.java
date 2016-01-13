@@ -18,6 +18,7 @@ public class Current implements Parcelable{
     private double mPrecipChance;
     private String mSummary;
     private String mTimezone;
+    private String locationString;
 
     public String getTimezone() {
         return mTimezone;
@@ -35,6 +36,14 @@ public class Current implements Parcelable{
 
     public Current(){
 
+    }
+
+    public String getLocationString() {
+        return locationString;
+    }
+
+    public void setLocationString(String locationString) {
+        this.locationString = locationString;
     }
 
     public int getIconId(){

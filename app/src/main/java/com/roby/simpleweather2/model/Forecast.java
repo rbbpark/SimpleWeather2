@@ -9,15 +9,6 @@ public class Forecast {
     private Current mCurrent;
     private Hour[] mHourlyForecast;
     private Day[] mDailyForecast;
-    private String location;
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public Current getCurrent() {
         return mCurrent;

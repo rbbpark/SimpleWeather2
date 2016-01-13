@@ -1,6 +1,7 @@
 package com.roby.simpleweather2.ui;
 
 import android.os.Bundle;
+import android.support.annotation.BinderThread;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +28,8 @@ public class CurrentFragment extends Fragment implements UpdateableFragment {
     @Bind(R.id.currentHumidity) TextView mHumidityView;
     @Bind(R.id.currentPrecipChance) TextView mPrecipView;
     @Bind(R.id.currentSummary) TextView mSummaryView;
-    @Bind(R.id.currentTimezone) TextView mTimezoneView;
     @Bind(R.id.currentIcon) ImageView mImageView;
+    @Bind(R.id.currentLocationText) TextView mLocationText;
 
 
     public static CurrentFragment newInstance(Current current) {
@@ -60,8 +61,8 @@ public class CurrentFragment extends Fragment implements UpdateableFragment {
         mHumidityView.setText(mCurrent.getHumidity() + "");
         mPrecipView.setText(mCurrent.getPrecipChance() + "");
         mSummaryView.setText(mCurrent.getSummary());
-        mTimezoneView.setText(mCurrent.getTimezone());
         mImageView.setImageResource(mCurrent.getIconId());
+        mLocationText.setText(mCurrent.getLocationString());
     }
 
     @Override
