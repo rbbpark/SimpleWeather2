@@ -3,7 +3,6 @@ package com.roby.simpleweather2.ui;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.roby.simpleweather2.R;
-import com.roby.simpleweather2.model.Current;
 import com.roby.simpleweather2.model.Day;
 import com.roby.simpleweather2.model.Forecast;
 
@@ -26,7 +24,7 @@ import butterknife.ButterKnife;
 public class DayFragment extends Fragment implements UpdateableFragment {
 
     private Day[] mDays;
-    private RecyclerView mRecyclerView;
+    private DayAdapter mAdapter;
 
     public static DayFragment newInstance(Day[] days) {
         DayFragment dayFragment = new DayFragment();
@@ -46,16 +44,16 @@ public class DayFragment extends Fragment implements UpdateableFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.activity_day_frag, container, false);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
-        DayAdapter adapter = new DayAdapter(mDays);
-        mRecyclerView.setAdapter(adapter);
-        return mRecyclerView;
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.activity_day_frag, container, false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        mAdapter = new DayAdapter(mDays);
+        recyclerView.setAdapter(mAdapter);
+        return recyclerView;
     }
 
     public void update(Forecast forecast){
         mDays = Arrays.copyOf(forecast.getDailyForecast(), forecast.getDailyForecast().length, Day[].class);
-        mRecyclerView.getAdapter().notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     //DayAdapter inner class

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_refresh"
-        android:orderInCategory="100"
-        android:showAsAction="always"
         android:icon="@drawable/ic_refresh_white_48dp"
-        android:title="Refresh"/>
+        android:orderInCategory="100"
+        android:title="Refresh"
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_settings"
-        android:title="Settings">
+        android:title="Settings"
+        app:showAsAction="never">
     </item>
 
 </menu>

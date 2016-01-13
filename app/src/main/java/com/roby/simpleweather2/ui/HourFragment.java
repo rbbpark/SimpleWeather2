@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.roby.simpleweather2.R;
-import com.roby.simpleweather2.model.Day;
 import com.roby.simpleweather2.model.Forecast;
 import com.roby.simpleweather2.model.Hour;
 
@@ -21,9 +20,9 @@ import java.util.Arrays;
  * Created by Roby on 1/6/2016.
  */
 public class HourFragment extends Fragment implements UpdateableFragment{
-    private Hour[] mHours;
 
-    private RecyclerView mRecyclerView;
+    private Hour[] mHours;
+    private HourAdapter mAdapter;
 
     public static HourFragment newInstance(Hour[] hours){
         HourFragment hourFragment = new HourFragment();
@@ -43,17 +42,16 @@ public class HourFragment extends Fragment implements UpdateableFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.activity_day_frag, container, false);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
-        HourAdapter adapter = new HourAdapter(mHours);
-        mRecyclerView.setAdapter(adapter);
-        return mRecyclerView;
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.activity_hour_frag, container, false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        mAdapter = new HourAdapter(mHours);
+        recyclerView.setAdapter(mAdapter);
+        return recyclerView;
     }
 
     @Override
     public void update(Forecast forecast) {
         mHours = Arrays.copyOf(forecast.getHourlyForecast(), forecast.getHourlyForecast().length, Hour[].class);
-        mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     //HourAdapter inner class

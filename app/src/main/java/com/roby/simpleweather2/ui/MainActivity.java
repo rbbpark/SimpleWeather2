@@ -62,8 +62,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private ViewPager mViewPager;
     private Adapter mAdapter;
 
-    private Button mButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,14 +76,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         mResultReceiver = new AddressResultReceiver(new Handler());
-
-        mButton = (Button) findViewById(R.id.refreshButton);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            }
-        });
     }
 
     @Override
@@ -100,13 +90,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         switch (item.getItemId()) {
             // action with ID action_refresh was selected
             case R.id.action_refresh:
-                Toast.makeText(this, "Refresh selected", Toast.LENGTH_SHORT)
-                        .show();
+                getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 break;
             // action with ID action_settings was selected
             case R.id.action_settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT)
-                        .show();
                 break;
             default:
                 break;
