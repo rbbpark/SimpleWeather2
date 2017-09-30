@@ -90,7 +90,7 @@ public class DayFragment extends Fragment implements UpdateableFragment {
 
             private TextView mTemperatureLabel;
             private TextView mTimeLabel;
-            private ImageView mImageView;
+                    private ImageView mImageView;
 
             public DayViewHolder(View itemView) {
                 super(itemView);
